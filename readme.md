@@ -15,7 +15,7 @@
 <a name="step1"></a>
 ### Step 1: Get the code
 
-    npm install react-native-api-client --save
+    npm install react-native-api-client
 
 -----
 <a name="step2"></a>
@@ -44,7 +44,7 @@
     #index.android.js
 
     ...
-    import Example from './lib/react-native-api-client';
+    import Example from './lib/react-native-api-client/Example';
     ...
 
     class Name extends React.Component {
