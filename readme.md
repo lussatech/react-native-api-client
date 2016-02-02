@@ -7,9 +7,6 @@
 * [Step 1: Get the code](#step1)
 * [Step 2: Generate files](#step2)
 * [Step 3: Customize files](#step3)
-* [Step 4: View an example](#step4)
-* [Step 5: Start server](#step5)
-* [Step 6: Run on device](#step6)
 
 -----
 <a name="step1"></a>
@@ -28,45 +25,87 @@
 ### Step 3: Customize files
 
     react-native-project
-    |_ ...
+    ...
     |_ lib
       |_ react-native-api-client
-        |_ Example.js
+        |_ Example
         |_ ...
-        |_ Navbar.js
+        |_ Client.js
         |_ ...
-        |_ Style.js
-
------
-<a name="step4"></a>
-### Step 4: View an example
-
-    #index.android.js
-
-    ...
-    import Example from './lib/react-native-api-client/Example';
+        |_ Server.js
     ...
 
-    class Name extends React.Component {
-      ...
-      render() {
-        return (
-          ...
-          <Example />
-          ...
-        );
-      }
-      ...
-    }
+#### Setting up your API end-point at `Server.js`, e.g.
+```javascript
+# lib/react-native-api-client/Server.js
 
------
-<a name="step5"></a>
-### Step 5: Start server
+...
+export const host = 'http://example.com';
+export default {
+  doctor: {
+    find: function () {
+      let url = host + '/doctor',     // API URI for browse doctor
+          opt = {
+            method: 'get'
+          };
 
-    react-native start
+      return fetch(url, opt);
+    },
+    ...
+  },
+  ...
+};
+...
+```
 
------
-<a name="step6"></a>
-### Step 6: Run on device
+#### Call your API end-point at `Client.js`, e.g.
+```javascript
+# lib/react-native-api-client/Client.js
 
-    react-native run-android
+...
+import api from './Server';
+
+export default class extends Component {
+  ...
+  componentDidMount() {
+    api.doctor.find()                // call API URI for browse doctor
+      .then((response) => {
+        ...
+      })
+      .catch((error) => {
+        ...
+      })
+      .done();
+  }
+  ...
+}
+...
+```
+
+#### Import `Client.js` to your _react-native-project_, e.g.
+```javascript
+# index.android.js
+
+...
+import Client from './lib/react-native-api-client/Client';
+
+class Name extends Component {
+  render() {
+    return <Client />;
+  }
+}
+```
+
+#### Or import `Example` to your _react-native-project_ to see an example, e.g.
+```javascript
+# index.android.js
+
+...
+import Example from './lib/react-native-api-client/Example';
+
+class Name extends Component {
+  render() {
+    return <Example />;
+  }
+}
+```

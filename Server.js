@@ -1,7 +1,6 @@
 'use strict';
 
 export const host = 'http://aprs.lussa.net';
-
 export default {
   doctor: {
     create: function (data) {
@@ -49,7 +48,7 @@ export default {
           opt = {
             method: 'delete'
           };
-          
+
       return fetch(url, opt);
     }
   }

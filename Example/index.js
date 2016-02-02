@@ -13,7 +13,7 @@ import React, {
 } from 'react-native';
 
 import Navbar from './Navbar';
-import api from './Server';
+import Client from '../Client';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,39 +57,12 @@ class Home extends Component {
       <ScrollView>
         <Navbar navigator={this.props.navigator} />
         <View style={styles.container}>
-        {(this.state.result ? this.renderResult() : this.renderScene())}
+          <TouchableHighlight style={styles.button} onPress={() => this.props.navigator.replace({name: 'client'})}>
+            <Text style={styles.buttonText}>Click Me</Text>
+          </TouchableHighlight>
         </View>
       </ScrollView>
     );
-  }
-
-  renderScene() {
-    return (
-      <TouchableHighlight style={styles.button} onPress={() => this.fetchData()}>
-        <Text style={styles.buttonText}>Click Me</Text>
-      </TouchableHighlight>
-    );
-  }
-
-  renderResult() {
-    return (
-      <Text>{this.state.result}</Text>
-    );
-  }
-
-  fetchData() {
-    api.doctor.find()
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          result: JSON.stringify(responseData)
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        ToastAndroid.show(String(error).replace('Error: ',''), ToastAndroid.LONG);
-      })
-      .done();
   }
 }
 
@@ -113,6 +86,9 @@ export default class extends Component {
   renderScene(route, navigator) {
     _navigator = navigator;
     switch (route.name) {
+      case 'client':
+        return <Client />;
+        break;
       default:
         return <Home navigator={navigator} />
     }
