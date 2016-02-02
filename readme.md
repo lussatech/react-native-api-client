@@ -28,7 +28,7 @@
     ...
     |_ lib
       |_ react-native-api-client
-        |_ Example
+        |_ Navbar.js
         |_ ...
         |_ Client.js
         |_ ...
@@ -82,30 +82,16 @@ export default class extends Component {
 ...
 ```
 
-#### Import `Client.js` to your _react-native-project_, e.g.
+#### Import `react-native-api-client` to your _react-native-project_, e.g.
 ```javascript
 # index.android.js
 
 ...
-import Client from './lib/react-native-api-client/Client';
+import Client from './lib/react-native-api-client';
 
 class Name extends Component {
   render() {
     return <Client />;
-  }
-}
-```
-
-#### Or import `Example` to your _react-native-project_ to see an example, e.g.
-```javascript
-# index.android.js
-
-...
-import Example from './lib/react-native-api-client/Example';
-
-class Name extends Component {
-  render() {
-    return <Example />;
   }
 }
 ```
