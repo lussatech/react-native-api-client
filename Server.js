@@ -4,7 +4,7 @@ export const host = 'http://aprs.lussa.net';
 export default {
   doctor: {
     create: function (data) {
-      let url = host + '/doctor',
+      let url = `${host}/doctor`,
           opt = {
             method: 'post',
             body: JSON.stringify(data),
@@ -16,7 +16,7 @@ export default {
       return fetch(url, opt);
     },
     find: function () {
-      let url = host + '/doctor',
+      let url = `${host}/doctor`,
           opt = {
             method: 'get'
           };
@@ -24,7 +24,7 @@ export default {
       return fetch(url, opt);
     },
     findOne: function (id) {
-      let url = host + '/doctor/' + id,
+      let url = `${host}/doctor/${id}`,
           opt = {
             method: 'get'
           };
@@ -32,7 +32,7 @@ export default {
       return fetch(url, opt);
     },
     update: function (id, data) {
-      let url = host + '/doctor/' + id,
+      let url = `${host}/doctor/${id}`,
           opt = {
             method: 'put',
             body: JSON.stringify(data),
@@ -44,7 +44,7 @@ export default {
       return fetch(url, opt);
     },
     destroy: function (id) {
-      let url = host + '/doctor/' + id,
+      let url = `${host}/doctor/${id}`,
           opt = {
             method: 'delete'
           };

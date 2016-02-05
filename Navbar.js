@@ -6,52 +6,18 @@ import React, {
   ToastAndroid,
   View,
   Text,
-  TextInput
+  TextInput,
+  PropTypes
 } from 'react-native';
 
 import ToolbarAndroid from 'ToolbarAndroid';
 
-const icons = {
-    back: require('./ic_menu_back.png'),
-    logo: require('./ic_menu_logo.png'),
-    menu: require('./ic_menu_option.png'),
-  search: require('./ic_menu_search.png'),
-};
-
-const actions = [
-  {title: 'Search', icon: icons.search, show: 'always'},
-  {title: 'Menu A'},
-  {title: 'Menu B'},
-  {title: 'Menu C'},
-  {title: 'Menu D'},
-  {title: 'Menu E'},
-];
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'stretch',
-  },
-  toolbar: {
-    height: 60,
-    backgroundColor: '#D6D2D2'
-  },
-  titleContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    marginRight: 177
-  },
-  title: {
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
-    fontWeight: 'bold',
-    fontSize: 20
-  }
-});
-
 export default class extends Component {
+  static propTypes = {
+     onSearch: PropTypes.func,
+    onRefresh: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 
@@ -62,52 +28,95 @@ export default class extends Component {
   }
 
   render() {
-    let title  = <View style={styles.titleContainer}>
-                  <Text style={styles.title}>{'Example'}</Text>
-                 </View>;
-
-    let search = <View style={styles.titleContainer}>
-                  <TextInput ref={'search'} placeholder={'type something . . .'} autoFocus={true} onChangeText={(text) => this.state.query = text} value={this.state.query} />
-                 </View>;
     return (
       <View style={styles.container}>
         <ToolbarAndroid
           style={styles.toolbar}
-          navIcon={(this.props.navigator && this.props.navigator.getCurrentRoutes().length > 1) ? icons.back : undefined}
-          onIconClicked={this.goBack.bind(this)}
-          logo={icons.logo}
+          overflowIcon={icons.more}
           actions={actions}
           onActionSelected={this.onActionSelected.bind(this)}>
-          {this.state.search ? search : title}
+          {this.state.search ? this.renderSearch() : this.renderTitle()}
         </ToolbarAndroid>
       </View>
     );
   }
 
+  renderTitle() {
+    return (
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{this.props.title}</Text>
+      </View>
+    );
+  }
+
+  renderSearch() {
+    return (
+      <View style={styles.titleContainer}>
+        <TextInput
+          style={{backgroundColor:'#ffffff',padding:2}}
+          ref={'search'}
+          placeholder={'type something . . .'}
+          placeholderTextColor={'#BFBFBF'}
+          autoFocus={true}
+          onChangeText={(text) => this.state.query = text}
+          onSubmitEditing={() => this.onSearch()}
+        />
+      </View>
+    );
+  }
+
   onActionSelected(position) {
-    if (this.state.search) return this.onSearch();
-
-    ToastAndroid.show(actions[position].title + ' selected.', ToastAndroid.SHORT);
-
-    if (actions[position].title === 'Search') {
-      this.setState({
-        search: true
-      });
+    switch (position) {
+       case 0: this.onSearch(); break;
+       case 1: this.onRefresh(); break;
+      default: ToastAndroid.show(`${actions[position].title} selected.`, ToastAndroid.SHORT);
     }
-    return null;
   }
 
   onSearch() {
-    ToastAndroid.show(this.state.query + ' not found', ToastAndroid.SHORT);
-    setTimeout(() => {
-      this.setState({
-        search: false
-      });
-    }, 1000);
+    this.props.onSearch && this.props.onSearch();
+
+    if (this.state.query) ToastAndroid.show(`${this.state.query} not found`, ToastAndroid.SHORT);
+    this.setState({search: !this.state.search, query: undefined});
   }
 
-  goBack() {
-    if (this.props.navigator) this.props.navigator.pop();
-    return null;
+  onRefresh() {
+    this.props.onRefresh && this.props.onRefresh();
   }
 }
+
+const icons = {
+     more: require('./icons/ic_action_more.png'),
+   search: require('./icons/ic_action_search.png'),
+  refresh: require('./icons/ic_action_refresh.png'),
+};
+
+const actions = [
+  {title: 'Search', icon: icons.search, show: 'always'},
+  {title: 'Refresh', icon: icons.refresh, show: 'ifRoom'},
+  {title: 'Single Sign On'},
+  {title: 'Notifications'},
+];
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'stretch',
+  },
+  toolbar: {
+    height: 60,
+    backgroundColor: '#00796B'
+  },
+  titleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  title: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'transparent',
+    fontSize: 20,
+    color: '#ffffff'
+  }
+});

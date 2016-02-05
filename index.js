@@ -12,13 +12,57 @@ import React, {
   ToastAndroid
 } from 'react-native';
 
-import Navbar from './Navbar';
 import Client from './Client';
+import Navbar from './Navbar';
+import Server, {host as Host} from './Server';
+
+export {Client, Navbar, Server, Host};
+
+export default class extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      client: false
+    };
+  }
+
+  render() {
+    return (
+      <ScrollView>
+        <Navbar title={`Home`} onRefresh={() => this.onRefresh()} />
+        <View style={styles.container}>
+          {this.state.client ? this.renderClient() : this.renderScene()}
+        </View>
+      </ScrollView>
+    );
+  }
+
+  renderScene() {
+    return (
+      <TouchableHighlight
+        style={styles.button}
+        underlayColor={'#2bbbad'}
+        onPress={() => this.setState({client: !this.state.client})}>
+        <Text style={styles.buttonText}>{`Click Me`}</Text>
+      </TouchableHighlight>
+    );
+  }
+
+  renderClient() {
+    return <Client />;
+  }
+
+  onRefresh() {
+    this.setState({client: false});
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10
+    alignItems: 'center',
+    padding: 15
   },
   buttonText: {
     fontSize: 18,
@@ -27,70 +71,8 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 44,
-    backgroundColor: '#EC7E48',
+    backgroundColor: '#26a69a',
     alignSelf: 'stretch',
     justifyContent: 'center'
   }
 });
-
-let _navigator;
-
-BackAndroid.addEventListener('hardwareBackPress', () => {
-  if (_navigator.getCurrentRoutes().length === 1  ) {
-    return false;
-  }
-  _navigator.pop();
-  return true;
-});
-
-class Home extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      result: undefined
-    };
-  }
-
-  render() {
-    return (
-      <ScrollView>
-        <Navbar navigator={this.props.navigator} />
-        <View style={styles.container}>
-          <TouchableHighlight style={styles.button} onPress={() => this.props.navigator.push({name: 'client'})}>
-            <Text style={styles.buttonText}>Click Me</Text>
-          </TouchableHighlight>
-        </View>
-      </ScrollView>
-    );
-  }
-}
-
-export default class extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <Navigator
-        initialRoute={{name:'home'}}
-        renderScene={this.renderScene.bind(this)}
-        configureScene={(route) => {
-          return route.sceneConfig ? route.sceneConfig : Navigator.SceneConfigs.FadeAndroid;
-        }}
-      />
-    );
-  }
-
-  renderScene(route, navigator) {
-    _navigator = navigator;
-    switch (route.name) {
-      case 'client':
-        return <Client />;
-        break;
-      default:
-        return <Home navigator={navigator} />
-    }
-  }
-}
