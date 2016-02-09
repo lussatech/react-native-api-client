@@ -1,3 +1,5 @@
+![react-native-api-client](https://raw.githubusercontent.com/lussatech/react-native-api-client/master/preview.gif)
+
 ### Installation
     npm i react-native-api-client
 
